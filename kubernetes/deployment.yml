@@ -15,5 +15,19 @@ spec:
     spec:
       containers:
       - name: drupalist
-        image: patienceman/test-node:latest
+        image: patienceman/drupalist:latest
         imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drupalist
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    bb: web
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30001
