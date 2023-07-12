@@ -13,19 +13,14 @@ jobs:
     name: Build Image
     runs-on: ubuntu-latest
     steps:
-      - shell: bash
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         env:
-          SUPER_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: |
-          echo "$SUPER_SECRET"
-
-      # - name: Login to Docker Hub
-        # uses: docker/login-action@v2
-        # run: echo '${{ toJSON(secrets) }}'
-        # shell: bash
-        # with:
-        #   username: ${{ secrets.DOCKERHUB_USERNAME }}
-        #   password: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_USERNAME: 'patienceman'
+          DOCKERHUB_TOKEN: 'dckr_pat_2-AEbY38b_sdx7pODNNabI5c3VQ'
+        with:
+          username: '$DOCKERHUB_USERNAME'
+          password: '$DOCKERHUB_TOKEN'
 
       - name: Docker run build
         uses: docker/build-push-action@v4
