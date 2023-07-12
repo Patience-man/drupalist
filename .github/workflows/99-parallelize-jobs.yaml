@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-# FIRST JOB #######################################################################
+  # FIRST JOB #######################################################################
   build-test-image:
     name: Build Image for Testing
     runs-on: ubuntu-latest
@@ -38,13 +38,13 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/patienceman/drupalist:${{ github.run_id }}
+          tags: ghcr.io/manirabona-programer/drupalist:${{ github.run_id }}
           target: test
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
- # NEXT JOB #######################################################################
+  # NEXT JOB #######################################################################
   test-unit:
     name: Unit tests in Docker
     needs: [build-test-image]
@@ -63,9 +63,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Unit Testing in Docker
-        run: docker run --rm ghcr.io/patienceman/drupalist:"$GITHUB_RUN_ID" echo "run test commands here"
+        run: docker run --rm ghcr.io/manirabona-programer/drupalist:"$GITHUB_RUN_ID" echo "run test commands here"
 
-# NEXT JOB #######################################################################
+  # NEXT JOB #######################################################################
   test-integration:
     name: Integration tests in Compose
     needs: [build-test-image]
@@ -75,7 +75,6 @@ jobs:
       packages: read
 
     steps:
-
       - name: Checkout git repo
         uses: actions/checkout@v3
 
@@ -94,11 +93,11 @@ jobs:
 
       - name: Test healthcheck in Docker Compose
         run: |
-          export TESTING_IMAGE=ghcr.io/patienceman/drupalist:"$GITHUB_RUN_ID"
+          export TESTING_IMAGE=ghcr.io/manirabona-programer/drupalist:"$GITHUB_RUN_ID"
           echo Testing image: "$TESTING_IMAGE"
           docker compose -f docker-compose.test.yml up --exit-code-from sut
 
-# NEXT JOB #######################################################################
+  # NEXT JOB #######################################################################
   test-k3d:
     name: Test Deployment in Kubernetes
     needs: [build-test-image]
@@ -139,12 +138,12 @@ jobs:
             --docker-server=https://ghcr.io \
             --docker-username=${{ github.actor }} \
             --docker-password=${{ secrets.GITHUB_TOKEN }}
-          export TESTING_IMAGE=ghcr.io/patienceman/drupalist:"$GITHUB_RUN_ID"
+          export TESTING_IMAGE=ghcr.io/manirabona-programer/drupalist:"$GITHUB_RUN_ID"
           envsubst < manifests/deployment.yaml  | kubectl apply -f -
           kubectl rollout status deployment myapp
           kubectl exec deploy/myapp -- curl --fail localhost
 
-# NEXT JOB #######################################################################
+  # NEXT JOB #######################################################################
   scan-image:
     name: Scan Image with Trivy
     needs: [build-test-image]
@@ -174,12 +173,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull image to scan
-        run: docker pull ghcr.io/patienceman/drupalist:"$GITHUB_RUN_ID"
+        run: docker pull ghcr.io/manirabona-programer/drupalist:"$GITHUB_RUN_ID"
 
       - name: Run Trivy for all CVEs (non-blocking)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/patienceman/drupalist:${{ github.run_id }}
+          image-ref: ghcr.io/manirabona-programer/drupalist:${{ github.run_id }}
           format: table
           exit-code: 0
 
@@ -187,7 +186,7 @@ jobs:
       # - name: Run Trivy for HIGH,CRITICAL CVEs and report (blocking)
       #   uses: aquasecurity/trivy-action@master
       #   with:
-      #     image-ref: ghcr.io/patienceman/drupalist:${{ github.run_id }}
+      #     image-ref: ghcr.io/manirabona-programer/drupalist:${{ github.run_id }}
       #     exit-code: 1
       #     ignore-unfixed: true
       #     vuln-type: 'os,library'
@@ -236,7 +235,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
-          images: patienceman/drupalist,ghcr.io/patienceman/drupalist
+          images: patienceman/drupalist,ghcr.io/manirabona-programer/drupalist
           flavor: |
             latest=false
           tags: |

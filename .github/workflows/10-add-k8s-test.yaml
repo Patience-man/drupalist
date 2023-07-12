@@ -32,7 +32,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#NEW: (START) ############################################################
       - name: Login to ghcr.io registry
         uses: docker/login-action@v2
         with:
@@ -68,7 +67,6 @@ jobs:
           envsubst < manifests/deployment.yaml  | kubectl apply -f -
           kubectl rollout status deployment myapp
           kubectl exec deploy/myapp -- curl --fail localhost
-#NEW: (END) ############################################################
 
       - name: Docker Metadata for Final Image Build
         id: docker_meta

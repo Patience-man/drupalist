@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -26,7 +25,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#NEW: (START) ##########################################################
       - name: Build and export to Docker
         uses: docker/build-push-action@v4
         with:
@@ -42,7 +40,6 @@ jobs:
       - name: Unit Testing in Docker
         run: |
           docker run --rm ${{ github.run_id }} echo "run test commands here"
-#NEW: (END) ############################################################
 
       - name: Docker Metadata for Final Image Build
         id: docker_meta
