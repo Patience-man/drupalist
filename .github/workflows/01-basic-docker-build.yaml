@@ -1,20 +1,15 @@
----
-name: Docker Build
-# simplest workflow possible
+name: Docker Image CI workflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-image:
-    name: Build Image
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Docker run build
-        uses: docker/build-push-action@v4
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: patienceman/drupalist:latest
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
