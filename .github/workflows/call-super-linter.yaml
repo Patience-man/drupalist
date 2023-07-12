@@ -9,8 +9,16 @@ on:
 
 jobs:
   call-super-linter:
-    name: Super-Linter
-    uses: super-linter/super-linter@v5.1.1
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4
 
     ### Optional settings examples
 
