@@ -1,0 +1,29 @@
+name: Docker Image CI workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ vars.DOCKERHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to DockerHub Registry
+        run: echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag patienceman/drupalist:$(date +%s) .
+
+      - name: Tag the Docker image
+        run: docker tag patienceman/drupalist:latest patienceman/drupalist:1.0
+
+      - name: Push the Docker image to the registry
+        run: docker push patienceman/drupalist:1.0
