@@ -20,7 +20,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Docker build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: patienceman/drupalist:latest
